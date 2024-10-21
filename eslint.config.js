@@ -3,6 +3,8 @@ import globals from 'globals'
 import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import jestDom from 'eslint-plugin-jest-dom'
+import testingLibrary from 'eslint-plugin-testing-library'
 
 export default [
   { ignores: ['dist'] },
@@ -17,11 +19,15 @@ export default [
         sourceType: 'module',
       },
     },
+    ...jestDom.configs["flat/recommended"],
+    ...testingLibrary.configs['flat/react'],
     settings: { react: { version: '18.3' } },
     plugins: {
       react,
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      jestDom,
+      testingLibrary,
     },
     rules: {
       ...js.configs.recommended.rules,
