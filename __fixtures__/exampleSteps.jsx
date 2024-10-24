@@ -1,10 +1,10 @@
 export default [
   {
     id: 'welcome',
-    messages: ['Привет! Я ваш виртуальный помощник. Нажмите "Начать разговор", чтобы открыть чат'],
+    messages: ['welcoming message'],
     buttons: [
       {
-        text: 'Начать разговор',
+        text: 'start chat',
         nextStepId: 'start',
         type: 'button',
       },
@@ -12,102 +12,108 @@ export default [
   },
   {
     id: 'start',
-    messages: ['Какой фрукт вы предпочитаете?'],
+    messages: ['start question'],
     buttons: [
       {
-        text: 'Яблоки',
-        nextStepId: 'recipe',
+        text: 'go to variant1',
+        nextStepId: 'variant1',
         type: 'button',
       },
       {
-        text: 'Груши',
-        nextStepId: 'recipe',
+        text: 'go to variant2',
+        nextStepId: 'variant2',
         type: 'button',
       },
       {
-        text: 'Апельсины',
-        nextStepId: 'recipe',
-        type: 'button',
-      },
-      {
-        text: 'Лимоны',
-        nextStepId: 'ew',
+        text: 'go to variant3',
+        nextStepId: 'variant3',
         type: 'button',
       },
     ],
   },
   {
-    id: 'recipe',
-    messages: ['Интересно... А в каком виде?'],
+    id: 'variant1',
+    messages: ['variant1 question'],
     buttons: [
       {
-        text: 'С сахаром',
-        nextStepId: 'withSugar',
+        text: 'go to variant1_1',
+        nextStepId: 'variant1_1',
         type: 'button',
       },
       {
-        text: 'Как пюре',
-        nextStepId: 'mashed',
-        type: 'button',
-      },
-      {
-        text: 'Как есть',
-        nextStepId: 'asIs',
+        text: 'go to variant1_2',
+        nextStepId: 'variant1_2',
         type: 'button',
       },
     ],
   },
   {
-    id: 'withSugar',
-    messages: ['Да, с сахаром получается круто, сладко... Можем еще поговорить, хотите?'],
+    id: 'variant1_1',
+    messages: ['variant1_1 question'],
     buttons: [
       {
-        text: 'Да, конечно',
+        text: 'go to variant1',
+        nextStepId: 'variant1',
+        type: 'button',
+      },
+      {
+        text: 'go to start',
         nextStepId: 'start',
         type: 'button',
       },
     ],
   },
   {
-    id: 'mashed',
-    messages: ['Пюре - супер кайф. Полностью согласен. Можем еще поговорить, хотите?'],
+    id: 'variant1_2',
+    messages: ['variant1_2 question'],
     buttons: [
       {
-        text: 'Да, конечно',
+        text: 'go to start',
         nextStepId: 'start',
         type: 'button',
       },
     ],
   },
   {
-    id: 'asIs',
-    messages: ['Натуральное значит? Уважаю, уважаю. Можем еще поговорить, хотите?'],
+    id: 'variant2',
+    messages: ['variant2 question'],
     buttons: [
       {
-        text: 'Да, конечно',
+        text: 'go to start',
         nextStepId: 'start',
         type: 'button',
       },
     ],
   },
   {
-    id: 'ew',
-    messages: ['Фу... :puke: Не, ну на этом наш разговор окончен. Не пиши мне больше!!!'],
+    id: 'variant3',
+    messages: ['variant3 question'],
     buttons: [
       {
-        text: 'Эй, ты чего?',
-        nextStepId: 'ewLoop',
+        text: 'go to variant3_1',
+        nextStepId: 'variant3_1',
         type: 'button',
       },
     ],
   },
   {
-    id: 'ewLoop',
-    messages: ['ГОВОРЮ ЖЕ!!! НЕ ПИШИ МНЕ!!!'],
+    id: 'variant3_1',
+    messages: ['variant3_1 question'],
     buttons: [
       {
-        text: 'Эй, ты чего?',
-        nextStepId: 'ewLoop',
+        text: 'go to variant3_2',
+        nextStepId: 'variant3_2',
+        type: 'button',
+      },
+    ],
+  },
+  {
+    id: 'variant3_2',
+    messages: ['variant3_2 question'],
+    buttons: [
+      {
+        text: 'go to start',
+        nextStepId: 'start',
         type: 'button',
       },
     ],
