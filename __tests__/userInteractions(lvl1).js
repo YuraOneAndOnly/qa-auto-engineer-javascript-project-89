@@ -12,7 +12,6 @@ window.HTMLElement.prototype.scrollIntoView = function () {}; // mock функц
 const startChatButtonName = 'Открыть Чат';
 const dialogBoxName = 'Виртуальный помощник';
 const avatarImageName = 'tota';
-const fixtureWelcomeMessage = steps[0].messages[0];
 const fixtureWelcomeButtonText = steps[0].buttons[0].text;
 const fixtureLvl1ButtonsText = steps[1].buttons.map((button) => button.text);
 
