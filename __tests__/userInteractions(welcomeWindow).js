@@ -16,7 +16,6 @@ const fixtureWelcomeMessage = steps[0].messages[0];
 const fixtureWelcomeButtonText = steps[0].buttons[0].text;
 const fixtureLvl1ButtonsText = steps[1].buttons.map((button) => button.text);
 
-
 beforeEach(async () => {
   await render(ChatBot(steps));
   const user = userEvent.setup();
@@ -41,7 +40,7 @@ const sortHTMLElementsByTextContent = (HTMLElements) => {
       return -1;
     }
     return 0;
-  })
+  });
 };
 
 test('chat dialog opens on start button', () => {
@@ -56,18 +55,18 @@ test('chat dialog have name', () => {
 });
 
 test('chat dialog have close button', () => {
-  const realCloseButton= getButtonByName('Close');
-  expect(realCloseButton).toBeVisible()
+  const realCloseButton = getButtonByName('Close');
+  expect(realCloseButton).toBeVisible();
   expect(realCloseButton).toBeEnabled(); // проверка, что есть закрывающая кнопка
 });
 
 test('welcome message have avatar', () => {
   const realAvatar = screen.getByRole('img', { name: avatarImageName });
   expect(realAvatar.src).toEqual(fixtureAvatar.src); // проверка, что используется корректный аватар
-}); 
+});
 
 test('welcome message have correct text', () => {
-  const dialog = screen.getByRole('dialog', { name: dialogBoxName })
+  const dialog = screen.getByRole('dialog', { name: dialogBoxName });
   const realMessageBody = dialog.querySelectorAll('.message-body');
   expect(realMessageBody.length).toEqual(1); // проверка, что сообщение одно
   expect(realMessageBody.item(0).textContent).toEqual(fixtureWelcomeMessage); // проверка, что сообщение соответствует фикстуре
@@ -75,9 +74,9 @@ test('welcome message have correct text', () => {
 
 test('welcome button have correct text', () => {
   const realWelcomeButton = getButtonByName(fixtureWelcomeButtonText);
-  const realWelcomeButtonText = realWelcomeButton.textContent; 
-  expect(realWelcomeButton).toBeVisible()
-  expect(realWelcomeButton).toBeEnabled() // проверка, что приветственная кнопка чата присутсвует
+  const realWelcomeButtonText = realWelcomeButton.textContent;
+  expect(realWelcomeButton).toBeVisible();
+  expect(realWelcomeButton).toBeEnabled(); // проверка, что приветственная кнопка чата присутсвует
   expect(realWelcomeButtonText).toEqual(fixtureWelcomeButtonText); // а её имя соответствует фикстуре
 });
 
@@ -88,21 +87,10 @@ test('next level buttons appear after pressing welcome button', async () => {
   const realButtons = fixtureLvl1ButtonsText.map((buttonText) => getButtonByName(buttonText));
   const sortedRealButtons = sortHTMLElementsByTextContent(realButtons); // сортировка HTML элементов
   // для того, чтобы корректно было сравнивать элементы с фикстурой ниже в forEach
-  expect(...realButtons).toBeVisible(); // проверка, что после нажатия приветственной кнопки 
+  expect(...realButtons).toBeVisible(); // проверка, что после нажатия приветственной кнопки
   expect(...realButtons).toBeEnabled(); // появляются новые кнопки со следующего уровня
   expect(realButtons).toHaveLength(fixtureLvl1ButtonsText.length);
-  sortedRealButtons.forEach((button, index) => expect(button).toHaveTextContent(fixtureLvl1ButtonsText[index]));
-});
-
-test('next level messages appear after pressing welcome button', async () => {
-  const user = userEvent.setup();
-  const realWelcomeButton = getButtonByName(fixtureWelcomeButtonText);
-  await act(async () => user.click(realWelcomeButton));
-  const realButtons = fixtureLvl1ButtonsText.map((buttonText) => getButtonByName(buttonText));
-  const sortedRealButtons = sortHTMLElementsByTextContent(realButtons); // сортировка HTML элементов
-  // для того, чтобы корректно было сравнивать элементы с фикстурой ниже в forEach
-  expect(...realButtons).toBeVisible(); // проверка, что после нажатия приветственной кнопки 
-  expect(...realButtons).toBeEnabled(); // появляются новые кнопки со следующего уровня
-  expect(realButtons).toHaveLength(fixtureLvl1ButtonsText.length);
-  sortedRealButtons.forEach((button, index) => expect(button).toHaveTextContent(fixtureLvl1ButtonsText[index]));
+  sortedRealButtons.forEach((button, index) =>
+    expect(button).toHaveTextContent(fixtureLvl1ButtonsText[index]),
+  );
 });
