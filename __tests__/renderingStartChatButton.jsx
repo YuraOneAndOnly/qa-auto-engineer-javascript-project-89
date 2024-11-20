@@ -13,16 +13,16 @@ beforeEach(async () => {
   await render(ChatBot(steps));
 });
 
-const getStartButton = async () => {
-  return screen.getByRole('button', { name: startChatButtonName });
+const getButtonByName = (buttonName) => {
+  return screen.getByRole('button', { name: buttonName });
 };
 
 test('button visible', async () => {
-  const startButton = await getStartButton();
+  const startButton = await getButtonByName(startChatButtonName);
   expect(startButton).toBeVisible();
 });
 
 test('correct button css style', async () => {
-  const startButton = await getStartButton();
+  const startButton = await getButtonByName(startChatButtonName);
   expect(startButton).toHaveStyle(defaultStyle);
 });

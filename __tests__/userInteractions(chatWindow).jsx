@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import ChatBot from '@hexlet/chatbot-v2';
 import steps from '../__fixtures__/exampleSteps.jsx'; // мои кастомные шаги
-import fixtureAvatar from '../__fixtures__/convertedAvatar.jsx'; // мои кастомные шаги
+import fixtureAvatar from '../__fixtures__/convertedAvatar.jsx'; // фикстура аватарки
 import { act } from 'react';
 
 window.HTMLElement.prototype.scrollIntoView = function () {}; // mock функции current.scrollIntoView , так как она отсутствует в jsdom
@@ -20,15 +20,11 @@ const fixtureLvl1MessagesText = steps[1].messages;
 beforeEach(async () => {
   await render(ChatBot(steps));
   const user = userEvent.setup();
-  const startButton = await getStartButton();
+  const startButton = await getButtonByName(startChatButtonName);
   await act(async () => user.click(startButton));
   const realWelcomeButton = getButtonByName(fixtureWelcomeButtonText);
   await act(async () => user.click(realWelcomeButton));
 });
-
-const getStartButton = () => {
-  return screen.getByRole('button', { name: startChatButtonName });
-};
 
 const getButtonByName = (buttonName) => {
   return screen.getByRole('button', { name: buttonName });
