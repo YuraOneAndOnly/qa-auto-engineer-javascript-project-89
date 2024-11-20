@@ -44,31 +44,22 @@ test('chat dialog opens on start button', () => {
   expect(dialog).toBeVisible();
 });
 
-test('chat dialog have name', () => {
+test('chat dialog structure is correct', () => {
   const dialog = screen.getByRole('dialog', { name: dialogBoxName });
   const realDialogName = dialog.querySelector('.modal-header').textContent;
   expect(realDialogName).toContain(dialogBoxName); // проверка, что у модального окна правильное имя
-});
 
-test('chat dialog have close button', () => {
   const realCloseButton = getButtonByName('Close');
   expect(realCloseButton).toBeVisible();
   expect(realCloseButton).toBeEnabled(); // проверка, что есть закрывающая кнопка
-});
 
-test('welcome message have avatar', () => {
   const realAvatar = screen.getByRole('img', { name: avatarImageName });
   expect(realAvatar.src).toEqual(fixtureAvatar.src); // проверка, что используется корректный аватар
-});
 
-test('welcome message have correct text', () => {
-  const dialog = screen.getByRole('dialog', { name: dialogBoxName });
   const realMessageBody = dialog.querySelectorAll('.message-body');
   expect(realMessageBody.length).toEqual(1); // проверка, что сообщение одно
   expect(realMessageBody.item(0).textContent).toEqual(fixtureWelcomeMessage); // проверка, что сообщение соответствует фикстуре
-});
 
-test('welcome button have correct text', () => {
   const realWelcomeButton = getButtonByName(fixtureWelcomeButtonText);
   const realWelcomeButtonText = realWelcomeButton.textContent;
   expect(realWelcomeButton).toBeVisible();
