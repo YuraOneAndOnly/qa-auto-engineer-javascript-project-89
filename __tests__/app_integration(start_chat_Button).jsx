@@ -1,8 +1,6 @@
 import { test, expect, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import ChatBot from '@hexlet/chatbot-v2';
-import steps from '../__fixtures__/exampleSteps.jsx'; // мои кастомные шаги
 import App from '../src/App.jsx';
 
 window.HTMLElement.prototype.scrollIntoView = function () {}; // mock функции current.scrollIntoView , так как она отсутствует в jsdom
