@@ -7,8 +7,6 @@ import App from '../src/App.jsx';
 
 window.HTMLElement.prototype.scrollIntoView = function () {}; // mock функции current.scrollIntoView , так как она отсутствует в jsdom
 
-const startChatButtonName = 'Открыть Чат';
-
 const mainApp = {
   inputScreen: {
     emailTextbox: {
@@ -264,7 +262,7 @@ describe('Main app functional tests', async () => {
     });
     const registerButtonAfterBack = getButtonByName(mainApp.inputScreen.registerButton.name);
 
-    // проверяем, что они видны и их значение не изменилось (соответсвует фикстуре)
+    // проверяем, что элементы экрана ввода видны и их значение не изменилось (соответсвует фикстуре)
     expect(realEmailTextboxAfterBack).toBeVisible;
     expect(realEmailTextboxAfterBack).toBeEnabled;
     expect(realEmailTextboxAfterBack).toHaveValue(mainAppFixture.fixtureEmail);
@@ -289,9 +287,35 @@ describe('Main app functional tests', async () => {
 
     expect(realRulesCheckboxAfterBack).toBeVisible;
     expect(realRulesCheckboxAfterBack).toBeEnabled;
-    expect(realRulesCheckboxAfterBack).toBeChecked();
+    expect(realRulesCheckboxAfterBack).toBeChecked;
 
     expect(registerButtonAfterBack).toBeVisible;
     expect(registerButtonAfterBack).toBeEnabled;
+  });
+
+  test('Main app empty textboxes test', async () => {
+    const user = userEvent.setup();
+
+    // нажимаем кнопку регистрации
+    const registerButton = getButtonByName(mainApp.inputScreen.registerButton.name);
+    await act(async () => user.click(registerButton));
+
+    // проверяем, что результирующая таблица появилась и соответствует фикстуре
+    const resultTable = screen.getByRole('table', { name: '' });
+    expect(resultTable).toBeVisible;
+
+    // проверяем, что чекбокс правил остался false
+    const rulesResultTableRow = screen.getByRole('row', {
+      name: 'Принять правила false',
+    });
+    expect(rulesResultTableRow).toBeVisible;
+    expect(rulesResultTableRow).toBeEnabled;
+
+    // проверка того, что все остальные поля пустые
+    Array.from(resultTable.rows)
+      .filter((row) => row.cells[0].textContent !== 'Принять правила')
+      .forEach((row) => {
+        expect(row.cells[1]).toBeEmptyDOMElement();
+      });
   });
 });
