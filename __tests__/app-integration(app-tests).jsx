@@ -4,60 +4,10 @@ import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import { act } from 'react';
 import App from '../src/App.jsx';
+import { mainApp } from '../__fixtures__/main-app-elements.js'
+import { mainAppFixture, wrongEmails } from '../__fixtures__/main-app-fixtures.js'
 
 window.HTMLElement.prototype.scrollIntoView = function () {}; // mock функции current.scrollIntoView , так как она отсутствует в jsdom
-
-const mainApp = {
-  inputScreen: {
-    emailTextbox: {
-      type: 'textbox',
-      name: 'Email',
-      placeholder: 'Email',
-    },
-    passwordTextbox: {
-      type: 'passwordTextbox',
-      name: 'Пароль',
-      placeholder: 'Пароль',
-    },
-    addressTextbox: {
-      type: 'textbox',
-      name: 'Адрес',
-      placeholder: 'Невский проспект, 12',
-    },
-    cityTextbox: {
-      type: 'textbox',
-      name: 'Город',
-      placeholder: '',
-    },
-    countryCombobox: {
-      type: 'combobox',
-      name: 'Страна',
-      options: ['Выберите', 'Аргентина', 'Россия', 'Китай'],
-      defaultOption: 'Выберите',
-    },
-    rulesCheckbox: {
-      type: 'checkbox',
-      name: 'Принять правила',
-      state: false,
-    },
-    registerButton: { type: 'button', name: 'Зарегистрироваться' },
-  },
-  resultScreen: {
-    backButton: { type: 'button', name: 'Назад' },
-  },
-};
-
-const mainAppFixture = {
-  fixtureEmail: 'testEmail@testDomain.com',
-  fixturePassword: 'testPassword',
-  fixtureAddress: 'testAddress',
-  fixtureCity: 'testCity',
-  fixtureComboboxOptionIndex: 1,
-  fixtureInnerHTML:
-    '<table class="table"><tbody><tr><td>Принять правила</td><td>true</td></tr><tr><td>Адрес</td><td>testAddress</td></tr><tr><td>Город</td><td>testCity</td></tr><tr><td>Страна</td><td>Аргентина</td></tr><tr><td>Email</td><td>testEmail@testDomain.com</td></tr><tr><td>Пароль</td><td>testPassword</td></tr></tbody></table>',
-};
-
-const wrongEmails = ['test', 'test@', '@test', '@', '@@', 'test@@test'];
 
 beforeEach(async () => {
   await render(<App />);
@@ -71,7 +21,7 @@ describe('Main app rendering tests', () => {
   // проверка отображения всех текстбоксов
   test.each(
     Object.values(mainApp.inputScreen).filter(
-      (item) => item.name && item.name !== 'Пароль' && item.type == 'textbox',
+      (item) => item.name && item.name !== mainApp.inputScreen.passwordTextbox.name && item.type == 'textbox',
     ), // Фильтруем текстбоксы, исключая 'Пароль'
     // первое item.name исключает undefined
   )('All textboxes of main App are enabled', (element) => {
