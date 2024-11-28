@@ -2,8 +2,8 @@ import { test, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
-import steps from '../__fixtures__/exampleSteps.jsx'; // мои кастомные шаги
-import fixtureAvatar from '../__fixtures__/convertedAvatar.jsx'; // фикстура аватарки
+import steps from '../__fixtures__/example-steps.jsx'; // мои кастомные шаги
+import fixtureAvatar from '../__fixtures__/converted-avatar.jsx'; // фикстура аватарки
 import { act } from 'react';
 import App from '../src/App.jsx';
 
