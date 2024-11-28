@@ -4,8 +4,8 @@ import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import { act } from 'react';
 import App from '../src/App.jsx';
-import { mainApp } from '../__fixtures__/main-app-elements.js'
-import { mainAppFixture, wrongEmails } from '../__fixtures__/main-app-fixtures.js'
+import { mainApp } from '../__fixtures__/main-app-elements.js';
+import { mainAppFixture, wrongEmails } from '../__fixtures__/main-app-fixtures.js';
 
 window.HTMLElement.prototype.scrollIntoView = function () {}; // mock функции current.scrollIntoView , так как она отсутствует в jsdom
 
@@ -21,7 +21,10 @@ describe('Main app rendering tests', () => {
   // проверка отображения всех текстбоксов
   test.each(
     Object.values(mainApp.inputScreen).filter(
-      (item) => item.name && item.name !== mainApp.inputScreen.passwordTextbox.name && item.type == 'textbox',
+      (item) =>
+        item.name &&
+        item.name !== mainApp.inputScreen.passwordTextbox.name &&
+        item.type == 'textbox',
     ), // Фильтруем текстбоксы, исключая 'Пароль'
     // первое item.name исключает undefined
   )('All textboxes of main App are enabled', (element) => {
