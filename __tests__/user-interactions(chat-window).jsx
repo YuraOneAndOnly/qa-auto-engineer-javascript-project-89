@@ -3,8 +3,8 @@ import { render, screen, waitForElementToBeRemoved } from '@testing-library/reac
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import ChatBot from '@hexlet/chatbot-v2';
-import steps from '../__fixtures__/example-steps.jsx'; // мои кастомные шаги
-import fixtureAvatar from '../__fixtures__/converted-avatar.jsx'; // фикстура аватарки
+import steps from '../__fixtures__/example-steps.js'; // мои кастомные шаги
+import fixtureAvatar from '../__fixtures__/converted-avatar.js'; // фикстура аватарки
 import { act } from 'react';
 
 window.HTMLElement.prototype.scrollIntoView = function () {}; // mock функции current.scrollIntoView , так как она отсутствует в jsdom

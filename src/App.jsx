@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Widget from '@hexlet/chatbot-v2';
-import steps from '../__fixtures__/example-steps.jsx'; // мои кастомные шаги
+import steps from '../__fixtures__/example-steps.js'; // мои кастомные шаги
 import '@hexlet/chatbot-v2/styles';
 
 const App = () => {
