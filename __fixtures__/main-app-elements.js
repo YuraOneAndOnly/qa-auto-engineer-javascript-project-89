@@ -1,4 +1,4 @@
-export const mainApp = {
+export const mainAppElements = {
   inputScreen: {
     emailTextbox: {
       type: 'textbox',
@@ -35,5 +35,6 @@ export const mainApp = {
   },
   resultScreen: {
     backButton: { type: 'button', name: 'Назад' },
+    resultTable: { type: 'table', name: '' },
   },
 };

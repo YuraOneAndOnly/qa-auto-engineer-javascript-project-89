@@ -4,7 +4,8 @@ import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import { act } from 'react';
 import App from '../src/App.jsx';
-import { mainApp } from '../__fixtures__/main-app-elements.js';
+import { MainAppInputScreen, MainAppResultScreen } from './src/app-integration-tests/app-tests.js';
+import { mainAppElements } from '../__fixtures__/main-app-elements.js';
 import { mainAppFixture, wrongEmails } from '../__fixtures__/main-app-fixtures.js';
 
 window.HTMLElement.prototype.scrollIntoView = function () {}; // mock функции current.scrollIntoView , так как она отсутствует в jsdom
@@ -20,10 +21,10 @@ const getButtonByName = (buttonName) => {
 describe('Main app rendering tests', () => {
   // проверка отображения всех текстбоксов
   test.each(
-    Object.values(mainApp.inputScreen).filter(
+    Object.values(mainAppElements.inputScreen).filter(
       (item) =>
         item.name &&
-        item.name !== mainApp.inputScreen.passwordTextbox.name &&
+        item.name !== mainAppElements.inputScreen.passwordTextbox.name &&
         item.type == 'textbox',
     ), // Фильтруем текстбоксы, исключая 'Пароль'
     // первое item.name исключает undefined
@@ -32,20 +33,20 @@ describe('Main app rendering tests', () => {
     expect(realElement).toBeEnabled;
     expect(realElement).toBeVisible;
   });
-
   // проверка отображения всех комбобоксов
   test.each(
-    Object.values(mainApp.inputScreen).filter((item) => item.name && item.type == 'combobox'), // Фильтруем все комбобоксы
+    Object.values(mainAppElements.inputScreen).filter(
+      (item) => item.name && item.type == 'combobox',
+    ), // Фильтруем все комбобоксы
     // первое item.name исключает undefined
   )('All comboboxes of main App are enabled', (element) => {
     const realElement = screen.getByRole('combobox', { name: element.name });
     expect(realElement).toBeEnabled;
     expect(realElement).toBeVisible;
   });
-
   // проверка отображения всех опций комбобоксов
   test.each(
-    Object.values(mainApp.inputScreen)
+    Object.values(mainAppElements.inputScreen)
       .filter((item) => item.options && item.type == 'combobox') // Фильтруем объекты, где есть options и тип combobox
       .flatMap((item) => item.options), // Извлекаем options и объединяем в один массив
   )('All combobox options of main App are visible and enabled', (element) => {
@@ -53,10 +54,9 @@ describe('Main app rendering tests', () => {
     expect(realElement).toBeEnabled;
     expect(realElement).toBeVisible;
   });
-
   // проверка отображения всех текстбоксов паролей
   test.each(
-    Object.values(mainApp.inputScreen).filter(
+    Object.values(mainAppElements.inputScreen).filter(
       (item) => item.name && item.type == 'passwordTextbox',
     ), // Фильтруем все комбобоксы
     // первое item.name исключает undefined
@@ -65,20 +65,20 @@ describe('Main app rendering tests', () => {
     expect(realElement).toBeEnabled;
     expect(realElement).toBeVisible;
   });
-
   // проверка отображения всех чекбоксов
   test.each(
-    Object.values(mainApp.inputScreen).filter((item) => item.name && item.type == 'checkbox'), // Фильтруем все комбобоксы
+    Object.values(mainAppElements.inputScreen).filter(
+      (item) => item.name && item.type == 'checkbox',
+    ), // Фильтруем все комбобоксы
     // первое item.name исключает undefined
   )('All checkboxes of main App are enabled', (element) => {
     const realElement = screen.getByRole('checkbox', { name: element.name });
     expect(realElement).toBeEnabled;
     expect(realElement).toBeVisible;
   });
-
   // проверка отображения всех кнопок
   test.each(
-    Object.values(mainApp.inputScreen).filter((item) => item.name && item.type == 'button'), // Фильтруем все комбобоксы
+    Object.values(mainAppElements.inputScreen).filter((item) => item.name && item.type == 'button'), // Фильтруем все комбобоксы
     // первое item.name исключает undefined
   )('All buttons of main App are enabled', (element) => {
     const realElement = getButtonByName(element.name);
@@ -91,182 +91,107 @@ describe('Main app functional tests', async () => {
   //проверка того, что неправильные почты не сработают и не покажут результирующую таблицу
   test.each(wrongEmails)('Email textbox limitations', async (wrongEmail) => {
     const user = userEvent.setup();
-    const emailTextbox = screen.getByRole('textbox', {
-      name: mainApp.inputScreen.emailTextbox.name,
-    });
-    const registerButton = getButtonByName(mainApp.inputScreen.registerButton.name);
-    await act(async () => user.clear(emailTextbox));
-    await act(async () => user.type(emailTextbox, wrongEmail));
-    await act(async () => user.click(registerButton));
-    expect(emailTextbox).toBeEnabled();
-    expect(emailTextbox).toBeVisible();
-    expect(registerButton).toBeEnabled();
-    expect(registerButton).toBeVisible();
+    const mainAppInputScreen = new MainAppInputScreen(screen, user);
+    await act(async () => user.clear(mainAppInputScreen.emailTextbox));
+    await act(async () => user.type(mainAppInputScreen.emailTextbox, wrongEmail));
+    await act(async () => mainAppInputScreen.clickRegisterButton());
+    expect(mainAppInputScreen.emailTextbox).toBeEnabled();
+    expect(mainAppInputScreen.emailTextbox).toBeVisible();
+    expect(mainAppInputScreen.registerButton).toBeEnabled();
+    expect(mainAppInputScreen.registerButton).toBeVisible();
   });
 
   test('Main app positive scenario', async () => {
     const user = userEvent.setup();
-
-    // получаем все активные элементы приложения
-    const realEmailTextbox = screen.getByRole('textbox', {
-      name: mainApp.inputScreen.emailTextbox.name,
-    });
-    const readAddressTextbox = screen.getByRole('textbox', {
-      name: mainApp.inputScreen.addressTextbox.name,
-    });
-    const realCityTextbox = screen.getByRole('textbox', {
-      name: mainApp.inputScreen.cityTextbox.name,
-    });
-    const realPasswordTextbox = screen.getByLabelText(mainApp.inputScreen.passwordTextbox.name);
-    const realCountryCombobox = screen.getByRole('combobox', {
-      name: mainApp.inputScreen.countryCombobox.name,
-    });
-    const realRulesCheckbox = screen.getByRole('checkbox', {
-      name: mainApp.inputScreen.rulesCheckbox.name,
-    });
-    const registerButton = getButtonByName(mainApp.inputScreen.registerButton.name);
-
-    // заполняем все активные элементы приложения
-    await act(async () => user.type(realEmailTextbox, mainAppFixture.fixtureEmail));
-    await act(async () => user.type(realPasswordTextbox, mainAppFixture.fixturePassword));
-    await act(async () => user.type(readAddressTextbox, mainAppFixture.fixtureAddress));
-    await act(async () => user.type(realCityTextbox, mainAppFixture.fixtureCity));
+    const mainAppInputScreen = new MainAppInputScreen(screen, user);
+    // заполняем все поля и вызываем регистрацию при помощи PageObject класса
     await act(async () =>
-      user.selectOptions(
-        realCountryCombobox,
-        mainApp.inputScreen.countryCombobox.options[mainAppFixture.fixtureComboboxOptionIndex],
+      mainAppInputScreen.register(
+        mainAppFixture.fixtureEmail,
+        mainAppFixture.fixturePassword,
+        mainAppFixture.fixtureAddress,
+        mainAppFixture.fixtureCity,
+        mainAppFixture.fixtureComboboxOptionIndex,
+        true,
       ),
     );
-    await act(async () => user.click(realRulesCheckbox));
-
-    // нажимаем кнопку регистрации
-    await act(async () => user.click(registerButton));
-
     // проверяем, что результирующая таблица появилась и соответствует фикстуре
-    const resultTable = screen.getByRole('table', { name: '' });
-    expect(resultTable).toBeVisible;
-    expect(resultTable).toContainHTML(mainAppFixture.fixtureInnerHTML);
-
+    const mainAppResultScreen = new MainAppResultScreen(screen, user);
+    expect(mainAppResultScreen.resultTable).toBeVisible;
+    expect(mainAppResultScreen.resultTable).toContainHTML(mainAppFixture.fixtureInnerHTML);
     // проверяем, что появилась кнопка Назад
-    const backButton = getButtonByName(mainApp.resultScreen.backButton.name);
-    expect(backButton).toBeVisible;
-    expect(backButton).toBeEnabled;
+    expect(mainAppResultScreen.backButton).toBeVisible;
+    expect(mainAppResultScreen.backButton).toBeEnabled;
   });
 
   test('Main app back to input screen', async () => {
     const user = userEvent.setup();
-    // получаем все активные элементы приложения
-    const realEmailTextbox = screen.getByRole('textbox', {
-      name: mainApp.inputScreen.emailTextbox.name,
-    });
-    const readAddressTextbox = screen.getByRole('textbox', {
-      name: mainApp.inputScreen.addressTextbox.name,
-    });
-    const realCityTextbox = screen.getByRole('textbox', {
-      name: mainApp.inputScreen.cityTextbox.name,
-    });
-    const realPasswordTextbox = screen.getByLabelText(mainApp.inputScreen.passwordTextbox.name);
-    const realCountryCombobox = screen.getByRole('combobox', {
-      name: mainApp.inputScreen.countryCombobox.name,
-    });
-    const realRulesCheckbox = screen.getByRole('checkbox', {
-      name: mainApp.inputScreen.rulesCheckbox.name,
-    });
-    const registerButton = getButtonByName(mainApp.inputScreen.registerButton.name);
-
-    // заполняем все активные элементы приложения
-    await act(async () => user.type(realEmailTextbox, mainAppFixture.fixtureEmail));
-    await act(async () => user.type(realPasswordTextbox, mainAppFixture.fixturePassword));
-    await act(async () => user.type(readAddressTextbox, mainAppFixture.fixtureAddress));
-    await act(async () => user.type(realCityTextbox, mainAppFixture.fixtureCity));
+    const mainAppInputScreen = new MainAppInputScreen(screen, user);
+    // заполняем все поля и вызываем регистрацию при помощи PageObject класса
     await act(async () =>
-      user.selectOptions(
-        realCountryCombobox,
-        mainApp.inputScreen.countryCombobox.options[mainAppFixture.fixtureComboboxOptionIndex],
+      mainAppInputScreen.register(
+        mainAppFixture.fixtureEmail,
+        mainAppFixture.fixturePassword,
+        mainAppFixture.fixtureAddress,
+        mainAppFixture.fixtureCity,
+        mainAppFixture.fixtureComboboxOptionIndex,
+        true,
       ),
     );
-    await act(async () => user.click(realRulesCheckbox));
-
-    // нажимаем кнопку регистрации
-    await act(async () => user.click(registerButton));
-
     // нажимаем кнопку Назад
-    const backButton = getButtonByName(mainApp.resultScreen.backButton.name);
-    await act(async () => user.click(backButton));
-
-    // при помощи getByRole проверяем, что все элементы экрана ввода появились снова
-    const realEmailTextboxAfterBack = screen.getByRole('textbox', {
-      name: mainApp.inputScreen.emailTextbox.name,
-    });
-    const readAddressTextboxAfterBack = screen.getByRole('textbox', {
-      name: mainApp.inputScreen.addressTextbox.name,
-    });
-    const realCityTextboxAfterBack = screen.getByRole('textbox', {
-      name: mainApp.inputScreen.cityTextbox.name,
-    });
-    const realPasswordTextboxAfterBack = screen.getByLabelText(
-      mainApp.inputScreen.passwordTextbox.name,
-    );
-    const realCountryComboboxAfterBack = screen.getByRole('combobox', {
-      name: mainApp.inputScreen.countryCombobox.name,
-    });
-    const realRulesCheckboxAfterBack = screen.getByRole('checkbox', {
-      name: mainApp.inputScreen.rulesCheckbox.name,
-    });
-    const registerButtonAfterBack = getButtonByName(mainApp.inputScreen.registerButton.name);
-
+    const mainAppResultScreen = new MainAppResultScreen(screen, user);
+    await act(async () => mainAppResultScreen.backToRegisterScreen());
+    // при помощи повторного формирования класса конструктором, в котором выполняются заново getByRole
+    // проверяем, что все элементы экрана ввода появились снова
+    const mainAppInputScreenAfterBack = new MainAppInputScreen(screen, user);
     // проверяем, что элементы экрана ввода видны и их значение не изменилось (соответсвует фикстуре)
-    expect(realEmailTextboxAfterBack).toBeVisible;
-    expect(realEmailTextboxAfterBack).toBeEnabled;
-    expect(realEmailTextboxAfterBack).toHaveValue(mainAppFixture.fixtureEmail);
+    expect(mainAppInputScreenAfterBack.emailTextbox).toBeVisible;
+    expect(mainAppInputScreenAfterBack.emailTextbox).toBeEnabled;
+    expect(mainAppInputScreenAfterBack.emailTextbox).toHaveValue(mainAppFixture.fixtureEmail);
 
-    expect(realPasswordTextboxAfterBack).toBeVisible;
-    expect(realPasswordTextboxAfterBack).toBeEnabled;
-    expect(realPasswordTextboxAfterBack).toHaveValue(mainAppFixture.fixturePassword);
+    expect(mainAppInputScreenAfterBack.passwordTextbox).toBeVisible;
+    expect(mainAppInputScreenAfterBack.passwordTextbox).toBeEnabled;
+    expect(mainAppInputScreenAfterBack.passwordTextbox).toHaveValue(mainAppFixture.fixturePassword);
 
-    expect(readAddressTextboxAfterBack).toBeVisible;
-    expect(readAddressTextboxAfterBack).toBeEnabled;
-    expect(readAddressTextboxAfterBack).toHaveValue(mainAppFixture.fixtureAddress);
+    expect(mainAppInputScreenAfterBack.addressTextbox).toBeVisible;
+    expect(mainAppInputScreenAfterBack.addressTextbox).toBeEnabled;
+    expect(mainAppInputScreenAfterBack.addressTextbox).toHaveValue(mainAppFixture.fixtureAddress);
 
-    expect(realCityTextboxAfterBack).toBeVisible;
-    expect(realCityTextboxAfterBack).toBeEnabled;
-    expect(realCityTextboxAfterBack).toHaveValue(mainAppFixture.fixtureCity);
+    expect(mainAppInputScreenAfterBack.cityTextbox).toBeVisible;
+    expect(mainAppInputScreenAfterBack.cityTextbox).toBeEnabled;
+    expect(mainAppInputScreenAfterBack.cityTextbox).toHaveValue(mainAppFixture.fixtureCity);
 
-    expect(realCountryComboboxAfterBack).toBeVisible;
-    expect(realCountryComboboxAfterBack).toBeEnabled;
-    expect(realCountryComboboxAfterBack.options.selectedIndex).toEqual(
+    expect(mainAppInputScreenAfterBack.countryCombobox).toBeVisible;
+    expect(mainAppInputScreenAfterBack.countryCombobox).toBeEnabled;
+    expect(mainAppInputScreenAfterBack.countryCombobox.options.selectedIndex).toEqual(
       mainAppFixture.fixtureComboboxOptionIndex,
     );
 
-    expect(realRulesCheckboxAfterBack).toBeVisible;
-    expect(realRulesCheckboxAfterBack).toBeEnabled;
-    expect(realRulesCheckboxAfterBack).toBeChecked;
+    expect(mainAppInputScreenAfterBack.rulesCheckbox).toBeVisible;
+    expect(mainAppInputScreenAfterBack.rulesCheckbox).toBeEnabled;
+    expect(mainAppInputScreenAfterBack.rulesCheckbox).toBeChecked;
 
-    expect(registerButtonAfterBack).toBeVisible;
-    expect(registerButtonAfterBack).toBeEnabled;
+    expect(mainAppInputScreenAfterBack.registerButton).toBeVisible;
+    expect(mainAppInputScreenAfterBack.registerButton).toBeEnabled;
   });
 
   test('Main app empty textboxes test', async () => {
     const user = userEvent.setup();
-
+    const mainAppInputScreen = new MainAppInputScreen(screen, user);
     // нажимаем кнопку регистрации
-    const registerButton = getButtonByName(mainApp.inputScreen.registerButton.name);
-    await act(async () => user.click(registerButton));
-
+    await act(async () => mainAppInputScreen.clickRegisterButton());
     // проверяем, что результирующая таблица появилась и соответствует фикстуре
-    const resultTable = screen.getByRole('table', { name: '' });
-    expect(resultTable).toBeVisible;
-
-    // проверяем, что чекбокс правил остался false
+    const mainAppResultScreen = new MainAppResultScreen(screen, user);
+    expect(mainAppResultScreen.resultTable).toBeVisible;
+    // проверяем, что чекбокс правил остался со значением по умолчанию (false) в появившейся таблице
     const rulesResultTableRow = screen.getByRole('row', {
-      name: 'Принять правила false',
+      name: `${mainAppElements.inputScreen.rulesCheckbox.name} ${mainAppElements.inputScreen.rulesCheckbox.state}`,
     });
     expect(rulesResultTableRow).toBeVisible;
     expect(rulesResultTableRow).toBeEnabled;
-
     // проверка того, что все остальные поля пустые
-    Array.from(resultTable.rows)
-      .filter((row) => row.cells[0].textContent !== 'Принять правила')
+    Array.from(mainAppResultScreen.resultTable.rows)
+      .filter((row) => row.cells[0].textContent !== mainAppElements.inputScreen.rulesCheckbox.name)
       .forEach((row) => {
         expect(row.cells[1]).toBeEmptyDOMElement();
       });
