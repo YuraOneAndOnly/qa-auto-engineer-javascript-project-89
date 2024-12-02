@@ -1,4 +1,4 @@
-import { mainAppElements } from '../../../__fixtures__/main-app-elements';
+import { mainAppElements } from '../../../__fixtures__/main-app-elements.js';
 
 export class MainAppInputScreen {
   constructor(screen, user) {
