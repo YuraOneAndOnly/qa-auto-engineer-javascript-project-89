@@ -5,6 +5,12 @@ import userEvent from '@testing-library/user-event';
 import ChatBot from '@hexlet/chatbot-v2';
 import steps from '../__fixtures__/example-steps.js'; // мои кастомные шаги
 import fixtureAvatar from '../__fixtures__/converted-avatar.js'; // фикстура аватарки
+import {
+  ChatPluginStartButton,
+  ChatPluginWelcomeScreen,
+  ChatPluginLvl1Screen,
+  sortHTMLElementsByTextContent,
+} from './src/app-integration-tests/chat-plugin-tests.js';
 import { chatFixtures } from '../__fixtures__/chat-fixtures.js';
 import { act } from 'react';
 
@@ -13,100 +19,86 @@ window.HTMLElement.prototype.scrollIntoView = function () {}; // mock функц
 beforeEach(async () => {
   await render(ChatBot(steps));
   const user = userEvent.setup();
-  const startButton = await getButtonByName(chatFixtures.startChatButtonName);
-  await act(async () => user.click(startButton));
-  const realWelcomeButton = getButtonByName(chatFixtures.fixtureWelcomeButtonText);
-  await act(async () => user.click(realWelcomeButton));
+  const chatPluginStartButton = new ChatPluginStartButton(screen, user);
+  await act(async () => user.click(chatPluginStartButton.startChatButton));
+  const chatPluginWelcomeScreen = new ChatPluginWelcomeScreen(screen, user);
+  await act(async () => user.click(chatPluginWelcomeScreen.chatWelcomeButton));
 });
 
-const getButtonByName = (buttonName) => {
-  return screen.getByRole('button', { name: buttonName });
-};
-
-const sortHTMLElementsByTextContent = (HTMLElements) => {
-  return HTMLElements.toSorted((a, b) => {
-    if (a.textContent > b.textContent) {
-      return 1;
-    }
-    if (a.textContent < b.textContent) {
-      return -1;
-    }
-    return 0;
-  });
-};
-
+// проверка того, что на 1 уровне чата корректная структура
 test('chat dialog next level structure is correct', () => {
-  const dialog = screen.getByRole('dialog', { name: chatFixtures.dialogBoxName });
-
+  const chatPluginLvl1Screen = new ChatPluginLvl1Screen(screen);
   //проверка, что окно диалога открывается
-  expect(dialog).toBeVisible();
+  expect(chatPluginLvl1Screen.dialog).toBeVisible();
 
   // проверка, что у модального окна правильное имя
-  const realDialogName = dialog.querySelector('.modal-header').textContent;
-  expect(realDialogName).toContain(chatFixtures.dialogBoxName);
+  expect(chatPluginLvl1Screen.dialogBoxName).toContain(chatFixtures.dialogBoxName);
 
   // проверка, что есть закрывающая кнопка
-  const realCloseButton = getButtonByName('Close');
-  expect(realCloseButton).toBeVisible();
-  expect(realCloseButton).toBeEnabled();
+  expect(chatPluginLvl1Screen.closeButton).toBeVisible();
+  expect(chatPluginLvl1Screen.closeButton).toBeEnabled();
 
   // проверка, что везде используется корректный аватар
-  const realAvatars = screen.getAllByRole('img', { name: chatFixtures.avatarImageName });
-  realAvatars.forEach((realAvatar) => expect(realAvatar.src).toEqual(fixtureAvatar.src));
+  chatPluginLvl1Screen.avatarImages.forEach((realAvatar) =>
+    expect(realAvatar.src).toEqual(fixtureAvatar.src),
+  );
 
   // проверка, что кнопка welcome превращается в сообщение
-  const welcomeButtonMessage = dialog.querySelector('.message.message-right>.message-body');
-  expect(welcomeButtonMessage).toBeVisible();
-  expect(welcomeButtonMessage).toBeEnabled();
-  expect(welcomeButtonMessage).toHaveTextContent(chatFixtures.fixtureWelcomeButtonText);
+  expect(chatPluginLvl1Screen.welcomeButtonAsMessage).toBeVisible();
+  expect(chatPluginLvl1Screen.welcomeButtonAsMessage).toBeEnabled();
+  expect(chatPluginLvl1Screen.welcomeButtonAsMessage).toHaveTextContent(
+    chatFixtures.fixtureWelcomeButtonText,
+  );
 
   // проверка, что после нажатия приветственной кнопки
   // появляются новые кнопки со следующего уровня
-  const realButtons = chatFixtures.fixtureLvl1ButtonsText.map((buttonText) =>
-    getButtonByName(buttonText),
-  );
-  const sortedRealButtons = sortHTMLElementsByTextContent(realButtons); // сортировка HTML элементов
+  const sortedRealButtons = sortHTMLElementsByTextContent(chatPluginLvl1Screen.chatLvl1Buttons); // сортировка HTML элементов
   // для того, чтобы корректно было сравнивать элементы с фикстурой ниже в forEach
-  expect(...realButtons).toBeVisible();
-  expect(...realButtons).toBeEnabled();
-  expect(realButtons).toHaveLength(chatFixtures.fixtureLvl1ButtonsText.length);
+  expect(...chatPluginLvl1Screen.chatLvl1Buttons).toBeVisible();
+  expect(...chatPluginLvl1Screen.chatLvl1Buttons).toBeEnabled();
+  expect(chatPluginLvl1Screen.chatLvl1Buttons).toHaveLength(
+    chatFixtures.fixtureLvl1ButtonsText.length,
+  );
   sortedRealButtons.forEach((button, index) =>
     expect(button).toHaveTextContent(chatFixtures.fixtureLvl1ButtonsText[index]),
   );
 
   // проверка того, что на уровне lvl1 все сообщения корректные
-  const realChatMessages = dialog.querySelectorAll('.message-body>.mb-0');
   const fixtureLvl1ChatMessages = [
-    chatFixtures.fixtureWelcomeMessage,
-    chatFixtures.fixtureWelcomeButtonText,
-    ...chatFixtures.fixtureLvl1MessagesText,
+    //формируем массив сообщений из фикстуры
+    chatFixtures.fixtureWelcomeMessage, // первое всегда идет приветственно сообщение
+    chatFixtures.fixtureWelcomeButtonText, // затем сообщение, в которое превратилась приветственная кнопка
+    ...chatFixtures.fixtureLvl1MessagesText, // затем текст все остальных сообщений
   ];
-  realChatMessages.forEach((message, index) => {
+  chatPluginLvl1Screen.chatLvl1Messages.forEach((message, index) => {
     expect(message).toBeVisible();
     expect(message).toHaveTextContent(fixtureLvl1ChatMessages[index]);
   });
 });
 
+// проверка того, что закрывающая кнопка работает, модальное окно закрывается
+// и появляется кнопка открыть чат
 test('close button closing chat window', async () => {
   const user = userEvent.setup();
-  const realCloseButton = getButtonByName('Close');
-  const dialog = screen.getByRole('dialog', { name: chatFixtures.dialogBoxName });
-  await act(async () => user.click(realCloseButton));
-  await waitForElementToBeRemoved(dialog);
-  const realOpenButton = getButtonByName(chatFixtures.startChatButtonName);
-  expect(dialog).not.toBeVisible();
-  expect(realOpenButton).toBeVisible();
-  expect(realOpenButton).toBeEnabled();
-  // проверка того, что закрывающая кнопка работает, модальное окно закрывается
-  // и появляется кнопка открыть чат
+  const chatPluginLvl1Screen = new ChatPluginLvl1Screen(screen, user);
+  await act(async () => chatPluginLvl1Screen.clickCloseButton()); // жмем кнопку закрыть
+  await waitForElementToBeRemoved(chatPluginLvl1Screen.dialog); // и ждем, пока окно чата закроется
+  const chatPluginStartButton = new ChatPluginStartButton(screen, user);
+  expect(chatPluginLvl1Screen.dialog).not.toBeVisible();
+  expect(chatPluginStartButton.startChatButton).toBeVisible();
+  expect(chatPluginStartButton.startChatButton).toBeEnabled();
 });
 
+// проверка того, что при нажатии кнопок происходит скролл
 test('chat is scrolling after button click', async () => {
   const user = userEvent.setup();
   const scrollToSpy = vi.fn();
   window.HTMLElement.prototype.scrollIntoView = scrollToSpy;
-  const anyChatButton = getButtonByName(chatFixtures.fixtureLvl1ButtonsText[0]);
-  await act(async () => user.click(anyChatButton));
-  expect(scrollToSpy).toHaveBeenCalledOnce();
-  // проверка того, что при нажатии кнопки происходит скролл
+  const chatPluginLvl1Screen = new ChatPluginLvl1Screen(screen, user);
+  await act(async () => chatPluginLvl1Screen.clickLvl1ChatButton()); // жмем кнопку
+  expect(scrollToSpy).toHaveBeenCalledOnce(); // и проверяем, что мокнутая функция вызывалась 1 раз
+  const chatPluginWelcomeScreen = new ChatPluginWelcomeScreen(screen, user);
+  await act(async () => chatPluginWelcomeScreen.clickChatWelcomeButton()); // жмем кнопку Welcome,
+  // так как после любой кнопки 1 уровня открывается снова приветственный чат
+  expect(scrollToSpy).toHaveBeenCalledTimes(2); // и проверяем, что мокнутая функция теперь вызывалась 2 раза
 });
