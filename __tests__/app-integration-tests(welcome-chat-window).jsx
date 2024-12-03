@@ -42,7 +42,7 @@ test('chat dialog structure is correct', () => {
   const realDialogName = dialog.querySelector('.modal-header').textContent;
   expect(realDialogName).toContain(chatFixtures.dialogBoxName); // проверка, что у модального окна правильное имя
 
-  const realCloseButton = getButtonByName('Close');
+  const realCloseButton = getButtonByName(chatFixtures.closeButtonName);
   expect(realCloseButton).toBeVisible();
   expect(realCloseButton).toBeEnabled(); // проверка, что есть закрывающая кнопка
 

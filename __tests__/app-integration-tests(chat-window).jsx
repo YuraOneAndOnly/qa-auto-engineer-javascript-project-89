@@ -45,7 +45,7 @@ test('chat dialog next level structure is correct', () => {
   expect(realDialogName).toContain(chatFixtures.dialogBoxName);
 
   // проверка, что есть закрывающая кнопка
-  const realCloseButton = getButtonByName('Close');
+  const realCloseButton = getButtonByName(chatFixtures.closeButtonName);
   expect(realCloseButton).toBeVisible();
   expect(realCloseButton).toBeEnabled();
 
@@ -88,7 +88,7 @@ test('chat dialog next level structure is correct', () => {
 
 test('close button closing chat window', async () => {
   const user = userEvent.setup();
-  const realCloseButton = getButtonByName('Close');
+  const realCloseButton = getButtonByName(chatFixtures.closeButtonName);
   const dialog = screen.getByRole('dialog', { name: chatFixtures.dialogBoxName });
   await act(async () => user.click(realCloseButton));
   await waitForElementToBeRemoved(dialog);
