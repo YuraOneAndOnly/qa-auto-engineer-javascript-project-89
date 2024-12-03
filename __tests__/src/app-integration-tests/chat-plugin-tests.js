@@ -8,9 +8,9 @@ const getChatDialogBoxName = (dialog) => {
   return dialog.querySelector('.modal-header').textContent;
 };
 
-const getCloseButtonByName = (screen, closeButtonName = 'Close') => {
+const getButtonByName = (screen, buttonName) => {
   return screen.getByRole('button', {
-    name: closeButtonName,
+    name: buttonName,
   });
 };
 
@@ -22,9 +22,7 @@ export class ChatPluginStartButton {
   constructor(screen, user = null) {
     this.screen = screen;
     this.user = user;
-    this.startChatButton = this.screen.getByRole('button', {
-      name: chatFixtures.startChatButtonName,
-    });
+    this.startChatButton = getButtonByName(this.screen, chatFixtures.startChatButtonName);
   }
   async clickStartChatButton() {
     await this.user.click(this.startChatButton);
@@ -37,12 +35,10 @@ export class ChatPluginWelcomeScreen {
     this.user = user;
     this.dialog = getChatDialogByName(this.screen, chatFixtures.dialogBoxName);
     this.dialogBoxName = getChatDialogBoxName(this.dialog);
-    this.closeButton = getCloseButtonByName(this.screen, chatFixtures.closeButtonName);
+    this.closeButton = getButtonByName(this.screen, chatFixtures.closeButtonName);
     this.avatarImages = getAllAvatarImagesByName(screen, chatFixtures.avatarImageName);
     this.chatMessagesBodies = this.dialog.querySelectorAll('.message-body');
-    this.chatWelcomeButton = this.screen.getByRole('button', {
-      name: chatFixtures.fixtureWelcomeButtonText,
-    });
+    this.chatWelcomeButton = getButtonByName(this.screen, chatFixtures.fixtureWelcomeButtonText);
   }
   async clickChatWelcomeButton() {
     await this.user.click(this.chatWelcomeButton);
@@ -55,13 +51,11 @@ export class ChatPluginLvl1Screen {
     this.user = user;
     this.dialog = getChatDialogByName(this.screen, chatFixtures.dialogBoxName);
     this.dialogBoxName = getChatDialogBoxName(this.dialog);
-    this.closeButton = getCloseButtonByName(this.screen, chatFixtures.closeButtonName);
+    this.closeButton = getButtonByName(this.screen, chatFixtures.closeButtonName);
     this.avatarImages = getAllAvatarImagesByName(screen, chatFixtures.avatarImageName);
     this.welcomeButtonAsMessage = this.dialog.querySelector('.message.message-right>.message-body');
     this.chatLvl1Buttons = chatFixtures.fixtureLvl1ButtonsText.map((buttonText) =>
-      this.screen.getByRole('button', {
-        name: buttonText,
-      }),
+      getButtonByName(this.screen, buttonText),
     );
     this.chatLvl1Messages = this.dialog.querySelectorAll('.message-body>.mb-0');
   }
