@@ -11,5 +11,10 @@ export default defineConfig({
     setupFiles: './vitest.setup.js',
     include: ['**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     pool: 'vmThreads',
+    coverage: {
+      provider: 'v8', // Провайдер покрытия (по умолчанию v8)
+      reporter: ['text', 'lcov'], // Форматы отчётов
+      reportsDirectory: './coverage', // Папка для хранения отчётов
+    },
   },
 });
