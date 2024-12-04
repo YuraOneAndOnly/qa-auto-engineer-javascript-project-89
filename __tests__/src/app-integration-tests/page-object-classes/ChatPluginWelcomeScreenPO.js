@@ -15,7 +15,7 @@ export default class ChatPluginWelcomeScreen {
     this.chatMessagesBodies = this.dialog.querySelectorAll('.message-body');
     this.chatWelcomeButton = getButtonByName(this.screen, chatFixtures.fixtureWelcomeButtonText);
   }
-  
+
   async clickChatWelcomeButton() {
     await this.user.click(this.chatWelcomeButton);
   }
