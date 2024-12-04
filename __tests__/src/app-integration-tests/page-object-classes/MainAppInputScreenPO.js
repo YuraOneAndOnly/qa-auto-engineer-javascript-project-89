@@ -1,4 +1,4 @@
-import { mainAppElements } from '../../../__fixtures__/main-app-elements.js';
+import { mainAppElements } from '../../../../__fixtures__/main-app-elements.js';
 
 export class MainAppInputScreen {
   constructor(screen, user) {
@@ -26,6 +26,7 @@ export class MainAppInputScreen {
       name: mainAppElements.inputScreen.registerButton.name,
     });
   }
+
   async register(email, password, address, city, countryOptionIndex = 0, rulesAccepted = false) {
     await this.user.type(this.emailTextbox, email);
     await this.user.type(this.passwordTextbox, password);
@@ -38,21 +39,8 @@ export class MainAppInputScreen {
     if (rulesAccepted) await this.user.click(this.rulesCheckbox);
     await this.user.click(this.registerButton);
   }
+
   async clickRegisterButton() {
     await this.user.click(this.registerButton);
-  }
-}
-
-export class MainAppResultScreen {
-  constructor(screen, user) {
-    this.screen = screen;
-    this.user = user;
-    this.resultTable = this.screen.getByRole('table', { name: mainAppElements.resultScreen.resultTable.name });
-    this.backButton = this.screen.getByRole('button', {
-      name: mainAppElements.resultScreen.backButton.name,
-    });
-  }
-  async backToRegisterScreen() {
-    await this.user.click(this.backButton);
   }
 }

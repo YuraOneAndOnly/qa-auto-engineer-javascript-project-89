@@ -3,12 +3,10 @@ import { render, screen, waitForElementToBeRemoved } from '@testing-library/reac
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import fixtureAvatar from '../__fixtures__/converted-avatar.js'; // фикстура аватарки
-import {
-  ChatPluginStartButton,
-  ChatPluginWelcomeScreen,
-  ChatPluginLvl1Screen,
-  sortHTMLElementsByTextContent,
-} from './src/app-integration-tests/chat-plugin-tests.js';
+import { ChatPluginStartButton } from './src/app-integration-tests/page-object-classes/ChatPluginStartButtonPO.js';
+import { ChatPluginWelcomeScreen } from './src/app-integration-tests/page-object-classes/ChatPluginWelcomeScreenPO.js';
+import { ChatPluginLvl1Screen } from './src/app-integration-tests/page-object-classes/ChatPluginLvl1ScreenPO.js';
+import { sortHTMLElementsByTextContent } from './src/app-integration-tests/sortHTMLElementsByTextContent.js';
 import { chatFixtures } from '../__fixtures__/chat-fixtures.js';
 import { act } from 'react';
 import App from '../src/App.jsx';

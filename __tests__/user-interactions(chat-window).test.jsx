@@ -5,12 +5,10 @@ import userEvent from '@testing-library/user-event';
 import ChatBot from '@hexlet/chatbot-v2';
 import steps from '../__fixtures__/example-steps.js'; // мои кастомные шаги
 import fixtureAvatar from '../__fixtures__/converted-avatar.js'; // фикстура аватарки
-import {
-  ChatPluginStartButton,
-  ChatPluginWelcomeScreen,
-  ChatPluginLvl1Screen,
-  sortHTMLElementsByTextContent,
-} from './src/app-integration-tests/chat-plugin-tests.js';
+import { ChatPluginStartButton } from './src/app-integration-tests/page-object-classes/ChatPluginStartButtonPO.js';
+import { ChatPluginWelcomeScreen } from './src/app-integration-tests/page-object-classes/ChatPluginWelcomeScreenPO.js';
+import { ChatPluginLvl1Screen } from './src/app-integration-tests/page-object-classes/ChatPluginLvl1ScreenPO.js';
+import { sortHTMLElementsByTextContent } from './src/app-integration-tests/sortHTMLElementsByTextContent.js';
 import { chatFixtures } from '../__fixtures__/chat-fixtures.js';
 import { act } from 'react';
 

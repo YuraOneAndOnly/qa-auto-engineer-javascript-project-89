@@ -4,7 +4,8 @@ import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import { act } from 'react';
 import App from '../src/App.jsx';
-import { MainAppInputScreen, MainAppResultScreen } from './src/app-integration-tests/app-tests.js';
+import { MainAppInputScreen } from './src/app-integration-tests/page-object-classes/MainAppInputScreenPO.js';
+import { MainAppResultScreen } from './src/app-integration-tests/page-object-classes/MainAppResultScreenPO.js';
 import { mainAppElements } from '../__fixtures__/main-app-elements.js';
 import { mainAppFixture, wrongEmails } from '../__fixtures__/main-app-fixtures.js';
 
