@@ -1,3 +1,4 @@
+/* v8 ignore next 20 */
 import ReactDOM from 'react-dom/client';
 import '@hexlet/chatbot-v2/styles';
 /*
