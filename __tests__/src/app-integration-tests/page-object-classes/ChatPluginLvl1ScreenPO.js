@@ -14,7 +14,7 @@ export default class ChatPluginLvl1Screen {
     this.avatarImages = getAllAvatarImagesByName(screen, chatFixtures.avatarImageName);
     this.welcomeButtonAsMessage = this.dialog.querySelector('.message.message-right>.message-body');
     this.chatLvl1Buttons = chatFixtures.fixtureLvl1ButtonsText
-      .map((buttonText) =>getButtonByName(this.screen, buttonText));
+      .map((buttonText) => getButtonByName(this.screen, buttonText));
     this.chatLvl1Messages = this.dialog.querySelectorAll('.message-body>.mb-0');
   }
 
