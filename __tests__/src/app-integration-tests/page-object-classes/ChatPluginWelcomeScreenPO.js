@@ -1,10 +1,10 @@
 import { chatFixtures } from '../../../../__fixtures__/chat-fixtures.js';
-import { getChatDialogByName } from '../getChatDialogByName.js';
-import { getChatDialogBoxName } from '../getChatDialogBoxName.js';
-import { getButtonByName } from '../getButtonByName.js';
-import { getAllAvatarImagesByName } from '../getAllAvatarImagesByName.js';
+import getChatDialogByName from '../getChatDialogByName.js';
+import getChatDialogBoxName from '../getChatDialogBoxName.js';
+import getButtonByName from '../getButtonByName.js';
+import getAllAvatarImagesByName from '../getAllAvatarImagesByName.js';
 
-export class ChatPluginWelcomeScreen {
+export default class ChatPluginWelcomeScreen {
   constructor(screen, user) {
     this.screen = screen;
     this.user = user;
@@ -15,6 +15,7 @@ export class ChatPluginWelcomeScreen {
     this.chatMessagesBodies = this.dialog.querySelectorAll('.message-body');
     this.chatWelcomeButton = getButtonByName(this.screen, chatFixtures.fixtureWelcomeButtonText);
   }
+  
   async clickChatWelcomeButton() {
     await this.user.click(this.chatWelcomeButton);
   }

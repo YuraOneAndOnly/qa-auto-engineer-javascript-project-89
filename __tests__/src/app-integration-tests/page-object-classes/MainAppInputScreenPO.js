@@ -1,6 +1,6 @@
 import { mainAppElements } from '../../../../__fixtures__/main-app-elements.js';
 
-export class MainAppInputScreen {
+export default class MainAppInputScreen {
   constructor(screen, user) {
     this.screen = screen;
     this.user = user;

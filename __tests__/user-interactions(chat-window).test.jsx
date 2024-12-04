@@ -8,7 +8,7 @@ import fixtureAvatar from '../__fixtures__/converted-avatar.js'; // фиксту
 import { ChatPluginStartButton } from './src/app-integration-tests/page-object-classes/ChatPluginStartButtonPO.js';
 import { ChatPluginWelcomeScreen } from './src/app-integration-tests/page-object-classes/ChatPluginWelcomeScreenPO.js';
 import { ChatPluginLvl1Screen } from './src/app-integration-tests/page-object-classes/ChatPluginLvl1ScreenPO.js';
-import { sortHTMLElementsByTextContent } from './src/app-integration-tests/sortHTMLElementsByTextContent.js';
+import sortHTMLElementsByTextContent from './src/app-integration-tests/sortHTMLElementsByTextContent.js';
 import { chatFixtures } from '../__fixtures__/chat-fixtures.js';
 import { act } from 'react';
 

@@ -1,5 +1,5 @@
-export const getButtonByName = (screen, buttonName) => {
+export default function getButtonByName(screen, buttonName) {
   return screen.getByRole('button', {
     name: buttonName,
   });
-};
+}

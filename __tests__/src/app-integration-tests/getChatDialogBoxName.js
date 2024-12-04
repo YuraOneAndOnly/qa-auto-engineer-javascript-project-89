@@ -1,3 +1,3 @@
-export const getChatDialogBoxName = (dialog) => {
+export default function getChatDialogBoxName(dialog) {
   return dialog.querySelector('.modal-header').textContent;
-};
+}

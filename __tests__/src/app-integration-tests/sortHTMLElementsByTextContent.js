@@ -1,4 +1,4 @@
-export const sortHTMLElementsByTextContent = (HTMLElements) => {
+export default function sortHTMLElementsByTextContent(HTMLElements) {
   return HTMLElements.toSorted((a, b) => {
     if (a.textContent > b.textContent) {
       return 1;
@@ -8,4 +8,4 @@ export const sortHTMLElementsByTextContent = (HTMLElements) => {
     }
     return 0;
   });
-};
+}

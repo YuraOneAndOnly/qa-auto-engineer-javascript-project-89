@@ -1,3 +1,3 @@
-export const getAllAvatarImagesByName = (screen, avatarImageName) => {
+export default function getAllAvatarImagesByName(screen, avatarImageName) {
   return screen.getAllByRole('img', { name: avatarImageName });
-};
+}
