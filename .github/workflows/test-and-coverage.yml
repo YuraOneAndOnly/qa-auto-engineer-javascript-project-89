@@ -22,14 +22,13 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run tests with coverage
-        run: npm run coverage
+      - name: Run tests
+        run: npm run test
 
-      - name: Install Code Climate Test Reporter
-        run: npm install -g codeclimate-test-reporter
-
-      - name: Upload coverage to Code Climate
+      - name: Run tests with coverage and upload coverage to Code Climate
+        uses: paambaati/codeclimate-action@v9.0.0
         env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        run: |
-          ./node_modules/.bin/codeclimate-test-reporter < coverage/lcov.info
+          CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
+        with:
+          coverageCommand: npm run coverage
+          coverageLocations: ${{github.workspace}}/coverage/lcov.info:lcov
